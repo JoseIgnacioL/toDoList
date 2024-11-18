@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block body %}
+ {% for usuario in usuarios %}
+  <p>Nombre: {{ usuario.coreo }}</p>
+  <p>Contraseña: {{usuario.contrasenyia}}
+{% endfor %}
+{% endblock %}

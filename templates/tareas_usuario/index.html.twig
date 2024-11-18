@@ -1,0 +1,255 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro
+{% endblock %}
+
+{% block body %}
+	<style>
+		body {
+			background-color: #f4f4f4; /* Fondo claro */
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			color: #333;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.logout-container {
+			width: 100%;
+			display: flex;
+			justify-content: space-between; /* Espacio entre el usuario y el botón de cerrar sesión */
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.user {
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		.logout {
+			background-color: #ff4000; /* Azul de Apple */
+			color: white;
+			padding: 10px 15px;
+			text-decoration: none;
+			border-radius: 5px;
+		}
+
+		.logout:hover {
+			background-color: #ff0000 ; /* Azul más oscuro al pasar el mouse */
+		}
+
+		.table-container {
+			width: 100%;
+			max-width: 800px; /* Ancho máximo de la tabla */
+		}
+
+		.card-container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px; /* Espaciado entre las tarjetas */
+			justify-content: center; /* Centrar contenido horizontalmente */
+		}
+
+		.card {
+			background-color: white; /* Fondo blanco para las tarjetas */
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+			width: 244px; /* Ancho fijo para las tarjetas */
+			height: 250px; /* Altura fija para las tarjetas */
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			min-height: 250px; /* Mantener la altura mínima para evitar descuadres */
+			flex: 1; /* Permitir que las tarjetas crezcan uniformemente */
+		}
+
+		.card h3 {
+			margin: 0;
+			font-size: 22px; /* Tamaño de texto */
+			color: #333;
+		}
+
+		.card p {
+			margin: 5px 0;
+			color: #666;
+		}
+
+		.actions {
+			margin-top: 10px;
+			display: flex;
+			justify-content: space-between; /* Espacio entre los botones de acción */
+		}
+
+		.borrar {
+			background-color: #0a84ff; /* Rojo de eliminar */
+			color: white;
+			padding: 8px 12px;
+			text-decoration: none;
+			border-radius: 5px;
+		}
+
+		.borrar:hover {
+			background-color: #d80000; /* Rojo más oscuro al pasar el mouse */
+		}
+
+		.crear {
+			background-color: #0a84ff; /* Azul brillante */
+			color: white;
+			text-align: center;
+			text-decoration: none;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 30px; /* Tamaño de fuente */
+			border-radius: 5px;
+			width: 60px; /* Ancho fijo para el botón */
+			height: 60px; /* Altura fija para el botón */
+			border: none;
+			cursor: pointer;
+		}
+
+		.crear:hover {
+			background-color: #007aff; /* Azul más oscuro al pasar el mouse */
+		}
+
+		.card.create-card {
+			background-color: white; /* Fondo blanco para la tarjeta del botón */
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			width: 244px; /* Ancho fijo para la tarjeta del botón */
+			height: 250px; /* Altura fija para la tarjeta del botón */
+			display: flex; /* Para centrar el botón */
+			justify-content: center; /* Centrar contenido horizontalmente */
+			align-items: center; /* Centrar contenido verticalmente */
+			padding: 0; /* Sin padding adicional */
+			box-sizing: border-box; /* Incluye padding en el tamaño total */
+		}
+		.search-form {
+			margin-top: 20px; /* Espacio superior */
+		}
+
+		.input-group {
+			display: flex; /* Flexbox para alinear el campo de texto y el botón */
+		}
+
+		.input-busqueda {
+			border: 1px solid #ccc; /* Borde gris claro */
+			border-radius: 5px 0 0 5px; /* Esquinas redondeadas a la izquierda */
+			padding: 10px; /* Espaciado interno */
+			width: 100%; /* Ancho completo */
+			max-width: 400px; /* Ancho máximo */
+		}
+
+		.input-busqueda:focus {
+			border-color: #007aff; /* Color de borde al enfocar */
+			outline: none; /* Sin contorno */
+		}
+
+		.btn-primary {
+			border-radius: 0 5px 5px 0; /* Esquinas redondeadas a la derecha */
+			padding: 10px 15px; /* Espaciado interno */
+		}
+
+		.container-search {
+			text-align: center;
+			margin-top: 20px;
+		}
+
+		.search-form {
+			display: inline-block;
+			width: 100%;
+		}
+
+		.input-group {
+			width: 100%;
+		}
+
+		.input-busqueda {
+			font-size: 18px; /* Tamaño de la fuente */
+			height: 50px; /* Altura del input */
+		}
+
+		.btn-primary {
+			font-size: 18px; /* Tamaño de la fuente del botón */
+			height: 50px; /* Altura del botón */
+		}
+	</style>
+
+	<div class="logout-container">
+	
+		<p class="user">{{ usuario.nombre }}
+			{{ usuario.apellido }}</p>
+		<a class="logout" href="{{ path('cerrar_sesion') }}">Cerrar Sesion</a>
+	</div>
+
+	<div class="container-search">
+		<form method="get" action="{{ path('buscar_tareas') }}" class="search-form">
+			<div class="input-group">
+				<input type="text" name="q" class="form-control input-busqueda" placeholder="Buscar..." value="{{ app.request.query.get('q') }}">
+				<div class="input-group-append">
+					<button type="submit" class="btn btn-primary">Buscar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<br>
+	<div class="table-container">
+		<div class="card-container">
+			<div class="card create-card">
+				<a class="crear" href="{{ path('app_tareas_usuario') }}">+</a>
+			</div>
+
+			{% if app.request.query.get('q') is not null and app.request.query.get('q') != '' %}
+				{% if datos is empty %}
+					<p class="text-danger">No se encontraron tareas para la búsqueda: "{{ app.request.query.get('q') }}".</p>
+				{% else %}
+					{% for tareaUsuario in datos %}
+						<div class="card">
+							<h3>{{ tareaUsuario.nombre }}</h3>
+							<p>
+								<strong>Descripción:</strong>
+								{{ tareaUsuario.descripcion }}</p>
+							<p>
+								<strong>Prioridad:</strong>
+								{{ tareaUsuario.prioridad }}</p>
+							<p>
+								<strong>Fecha:</strong>
+								{{ tareaUsuario.fecha.format('Y-m-d') }}</p>
+							<div class="actions">
+								<a class="borrar" href="{{ path('editar_tareas', {'id': tareaUsuario.id}) }}">Editar</a>
+								<a class="borrar" href="{{ path('borrar_tareas', {'id': tareaUsuario.id}) }}">Borrar</a>
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% else %}
+				{% if app.request.query.get('q') is not null %}{% endif %}
+
+				{% for tareaUsuario in datos %}
+					<div class="card">
+						<h3>{{ tareaUsuario.idTarea.nombre }}</h3>
+						<p>
+							<strong>Descripción:</strong>
+							{{ tareaUsuario.idTarea.descripcion }}</p>
+						<p>
+							<strong>Prioridad:</strong>
+							{{ tareaUsuario.idTarea.prioridad }}</p>
+						<p>
+							<strong>Fecha:</strong>
+							{{ tareaUsuario.idTarea.fecha.format('Y-m-d') }}</p>
+						<div class="actions">
+							<a class="borrar" href="{{ path('editar_tareas', {'id': tareaUsuario.id}) }}">Editar</a>
+							<a class="borrar" href="{{ path('borrar_tareas', {'id': tareaUsuario.id}) }}">Borrar</a>
+						</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+
+		</div>
+	</div>
+</div>{% endblock %}

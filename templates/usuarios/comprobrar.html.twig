@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block body %}
+<style>
+     body {
+        background-image: linear-gradient(to right top, #0263f6, #1d49c5, #1d3197, #141a6c, #080444);
+        min-height: 100vh; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0; 
+        font-family: 'Arial', sans-serif; 
+    }
+
+    h1 {
+        color: white;
+    }
+
+ .user-info {
+        position: absolute; 
+        top: 20px; 
+        right: 100px; 
+        color: white;
+        display: flex; 
+        align-items: center; 
+    }
+
+    .logout {
+        margin-left: 10px; 
+        color: white; 
+        text-decoration: none; 
+    }
+</style>
+
+<div class="user-info">
+    {% for user in usuario %}
+        <span>{{ user.nombre }} {{ user.apellido }}</span>
+        <a class="logout" href="{{ path('cerrar_sesion') }}"> Cerrar Sesion</a>
+    {% endfor %}
+</div>
+{% endblock body %}
