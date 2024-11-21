@@ -55,35 +55,46 @@ class UsuariosController extends AbstractController
             'formulario' => $formularioRegistro->createView(),
         ]);
     }
-
     #[Route('usuario/nuevo', name: 'usuario_nuevo', methods: ['GET', 'POST'])]
     function nuevoUsuario(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface  $passwordHasher)
     {
         $usuario = new Usuarios();
         $formulario = $this->createForm(UsuariosType::class, $usuario);
         $formulario->handleRequest($request);
-
+    
         if ($formulario->isSubmitted() && $formulario->isValid()) {
-
+    
+            $correo = $formulario->get('coreo')->getData();
+    
+            $usuarioExistente = $entityManager->getRepository(Usuarios::class)->findOneBy(['coreo' => $correo]);
+    
+            if ($usuarioExistente) {
+                $this->addFlash('error', 'El correo electrónico ya está registrado.');
+    
+                return $this->render('usuarios/registrarUsuarios.html.twig', [
+                    'form' => $formulario->createView()
+                ]);
+            }
+    
             $plainPassword = $formulario->get('contrasenyia')->getData();
             if ($plainPassword === null) {
                 throw new \RuntimeException('La contraseña no puede ser nula.');
             }
-
-
+    
             $hashedPassword = $passwordHasher->hashPassword($usuario, $plainPassword);
             $usuario->setContrasenyia($hashedPassword);
-
+    
             $entityManager->persist($usuario);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('iniciar_sesion');
         }
-
+    
         return $this->render('usuarios/registrarUsuarios.html.twig', [
             'form' => $formulario->createView()
         ]);
     }
+    
 
     #[Route('usuario/cerrar-sesion', name: 'cerrar_sesion')]
     public function cerrarSesion(Request $request, TokenStorageInterface $tokenStorage)

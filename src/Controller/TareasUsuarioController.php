@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Tareas;
 use App\Entity\TareasUsuario;
 use App\Entity\Usuarios;
-use App\Form\SearchType;
 use App\Form\TareasUsuariosType;
 use App\Repository\TareasUsuarioRepository;
 use App\Repository\TareasRepository;
