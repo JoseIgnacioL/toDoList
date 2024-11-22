@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -39,6 +40,14 @@ class UsuariosType extends AbstractType
                         'min' => 6,
                         'minMessage' => 'La contraseña tiene que tener un mínimo de {{ limit }} caracteres',
                     ]),
+                ],
+            ])
+            ->add('Rol', ChoiceType::class, [
+                'label' => 'Rol',
+                'required' => true,
+                'choices' => [
+                    'Administrador' => 'admin',
+                    'Usuario' => 'user',
                 ],
             ]);
     }

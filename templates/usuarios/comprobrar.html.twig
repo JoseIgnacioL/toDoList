@@ -1,43 +1,220 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registro{% endblock %}
+{% block title %}Registro
+{% endblock %}
 
 {% block body %}
-<style>
-     body {
-        background-image: linear-gradient(to right top, #0263f6, #1d49c5, #1d3197, #141a6c, #080444);
-        min-height: 100vh; 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0; 
-        font-family: 'Arial', sans-serif; 
-    }
+	<style>
+		/* General Styles */
+		body {
+			background-color: #121212;
+			color: white;
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: flex-start;
+			align-items: flex-start;
+			height: 100vh;
+		}
 
-    h1 {
-        color: white;
-    }
+		/* Sidebar navigation menu */
+		.sidebar {
+			background-color: #333;
+			width: 250px;
+			height: 100%;
+			position: fixed;
+			top: 0;
+			left: 0;
+			padding-top: 20px;
+		}
 
- .user-info {
-        position: absolute; 
-        top: 20px; 
-        right: 100px; 
-        color: white;
-        display: flex; 
-        align-items: center; 
-    }
+		.sidebar a {
+			display: block;
+			color: white;
+			padding: 15px 25px;
+			text-decoration: none;
+			font-size: 1.1rem;
+			margin-bottom: 10px;
+			transition: background-color 0.3s ease;
+		}
 
-    .logout {
-        margin-left: 10px; 
-        color: white; 
-        text-decoration: none; 
-    }
-</style>
+		.sidebar a:hover {
+			background-color: #555;
+		}
 
-<div class="user-info">
-    {% for user in usuario %}
-        <span>{{ user.nombre }} {{ user.apellido }}</span>
-        <a class="logout" href="{{ path('cerrar_sesion') }}"> Cerrar Sesion</a>
-    {% endfor %}
+		/* Main content area */
+		.content {
+			margin-left: 250px;
+			padding: 20px;
+			width: calc(100% - 250px);
+		}
+
+		.container {
+			background-color: rgba(0, 0, 0, 0.7);
+			padding: 30px 50px;
+			border-radius: 10px;
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+			width: 80%;
+			max-width: 600px;
+			margin: auto;
+		}
+
+		h1 {
+			color: #f1f1f1;
+			font-size: 2rem;
+			margin-bottom: 20px;
+		}
+
+		.user-info {
+			margin-bottom: 20px;
+		}
+
+		.user-info span {
+			display: block;
+			margin: 5px 0;
+			font-size: 1.2rem;
+		}
+
+		.tarea-info span {
+			display: block;
+			margin: 5px 0;
+			font-size: 1rem;
+			color: #f1f1f1;
+		}
+
+		.logout {
+			display: inline-block;
+			margin-top: 20px;
+			margin-left: 20px; /* Ajusta la posición hacia la izquierda */
+			padding: 10px 20px; /* Ajusta el padding para que no sea tan ancho */
+			background-color: #ff5722;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			font-size: 1rem;
+			transition: background-color 0.3s ease;
+			white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+			line-height: 1.5; /* Asegura que el botón tenga una altura uniforme */
+		}
+
+		.logout:hover {
+			background-color: #e64a19;
+		}
+
+
+		#user-info:target {
+			display: block; /* Se muestra cuando el enlace apunta a este ID */
+		}
+
+		#task-info:target {
+			display: block;
+		}
+
+		#user-info,
+		#task-info {
+			display: none; /* Ocultar por defecto */
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse; /* Elimina los espacios entre celdas */
+			margin-top: 20px; /* Espacio superior */
+		}
+
+		th,
+		td {
+			padding: 12px; /* Añade padding a las celdas */
+			text-align: left; /* Alinea el texto a la izquierda */
+			border-bottom: 1px solid #555; /* Añade una línea debajo de las celdas */
+		}
+
+		th {
+			background-color: #333; /* Color de fondo de las celdas de los encabezados */
+			color: #ff5722; /* Color de texto del encabezado */
+			font-weight: bold; /* Hace el texto en negrita */
+		}
+
+		td {
+			background-color: #222; /* Color de fondo para las celdas de datos */
+			color: #f1f1f1; /* Color de texto de las celdas de datos */
+		}
+
+		tr:nth-child(even) td {
+			background-color: #2b2b2b; /* Color alternado para las filas pares */
+		}
+
+		tr:hover {
+			background-color: #444; /* Color de fondo cuando el mouse pasa sobre la fila */
+		}
+
+		/* Estilos para el encabezado */
+		h2 {
+			color: #f1f1f1;
+			font-size: 1.8rem;
+			margin-bottom: 10px;
+		}
+	</style>
+	<div class="sidebar">
+		<a href="#user-info">Usuarios</a>
+		<a href="#task-info">Tareas</a>
+	</div>
+
+	<div
+		class="content">
+		<!-- Contenedor de los usuarios -->
+		<div id="user-info">
+			<h2>Usuarios</h2>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Apellido</th>
+						<th>Email</th>
+						<th>Rol</th>
+                        <th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in usuario %}
+						<tr>
+							<td>{{ user.nombre }}</td>
+							<td>{{ user.apellido }}</td>
+							<td>{{ user.coreo }}</td>
+							<td>{{ user.rol }}</td>
+                            <td><a class="logout" href=" {{ path('borrar_usuarios', {'id': user.id}) }}">Borrar</a></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<!-- Contenedor de las tareas -->
+		<div id="task-info">
+			<h2>Tareas</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>descripcion</th>
+						<th>Fecha</th>
+                        <th>Accion</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for task in tareas %}
+						<tr>
+							<td>{{ task.nombre }}</td>
+							<td>{{ task.descripcion }}</td>
+							<td>{{task.fecha.format('Y-m-d') }}</td>
+                            <td><a class="logout" href="{{ path('borrar_tareas', {'id': task.id}) }}">Borrar</a>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
-{% endblock body %}
+
+<a class="logout" href="{{ path('cerrar_sesion') }}">Cerrar Sesión</a>
+{% endblock %}

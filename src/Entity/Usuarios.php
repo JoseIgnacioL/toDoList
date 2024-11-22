@@ -28,6 +28,10 @@ class Usuarios implements PasswordAuthenticatedUserInterface
     private ?string $coreo = null;
 
     #[ORM\Column(length: 255)]
+
+    private ?string $rol = null;
+
+    #[ORM\Column(length: 255)]
     
     private ?string $contrasenyia = null;
 
@@ -142,6 +146,19 @@ class Usuarios implements PasswordAuthenticatedUserInterface
     public function getPassword(): string
     {
         return $this->contrasenyia;
+    }
+
+
+    public function getRol(): ?string
+    {
+        return $this->rol;
+    }
+
+    public function setRol(string $rol): static
+    {
+        $this->rol = $rol;
+
+        return $this;
     }
 
 

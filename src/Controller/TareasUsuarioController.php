@@ -34,6 +34,7 @@ class TareasUsuarioController extends AbstractController
         ]);
     }
 
+
     #[Route('/tareas/anyadir', name: 'app_tareas_usuario')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -65,7 +66,7 @@ class TareasUsuarioController extends AbstractController
         ]);
     }
 
-    #[Route('/borrar/editar/{id}', name: 'borrar_tareas')]
+    #[Route('/borrar/{id}', name: 'borrar_tareas')]
     public function borrarTareas($id, Request $request, TareasRepository $tareaRepo, EntityManagerInterface $entityManager)
     {
         $resultado = $tareaRepo->find($id);
@@ -82,6 +83,61 @@ class TareasUsuarioController extends AbstractController
 
         return $this->redirectToRoute('app_tareas_usuario_success'); // Cambia esto a la ruta deseada
     }
+
+    #[Route('/borrar/{id}', name: 'borrar_tareas')]
+    public function borrarTareasT($id, Request $request, TareasRepository $tareaRepo, TareasUsuarioRepository $tareaUsuarioRepo, EntityManagerInterface $entityManager)
+    {
+        $resultado = $tareaRepo->find($id);
+    
+        if (!$resultado) {
+            return $this->redirectToRoute('some_error_route');
+        }
+    
+        $tareasUsuarios = $tareaUsuarioRepo->findBy(['idTarea' => $resultado]);
+    
+        foreach ($tareasUsuarios as $tareaUsuario) {
+            $entityManager->remove($tareaUsuario);
+        }
+    
+        $entityManager->remove($resultado);
+        $entityManager->flush();
+    
+        $users = $entityManager->getRepository(Usuarios::class)->findAll();  // Fetch users
+        $tareas = $entityManager->getRepository(Tareas::class)->findAll();    // Fetch tasks
+    
+        return $this->render('usuarios/comprobrar.html.twig', [
+            'usuario' => $users,
+            'tareas' => $tareas,
+        ]);
+    }
+
+
+    #[Route('/borrar/usuario/{id}', name: 'borrar_usuarios')]
+    public function borrarUsuario($id, Request $request,UsuariosRepository $usuariosRepository ,TareasRepository $tareaRepo, TareasUsuarioRepository $tareaUsuarioRepo, EntityManagerInterface $entityManager)
+    {
+        $resultado = $usuariosRepository->find($id);
+    
+        $usuarios = $usuariosRepository->findBy(['id' => $resultado->getId()]);
+        $tareasUsuarios = $tareaUsuarioRepo->findBy(['usuario' => $usuarios]);
+
+     
+    
+        foreach ($usuarios as $usuario) {
+            $entityManager->remove($usuario);
+        }
+    
+        $entityManager->remove($resultado);
+        $entityManager->flush();
+    
+        $users = $entityManager->getRepository(Usuarios::class)->findAll();  // Fetch users
+        $tareas = $entityManager->getRepository(Tareas::class)->findAll();    // Fetch tasks
+    
+        return $this->render('usuarios/comprobrar.html.twig', [
+            'usuario' => $users,
+            'tareas' => $tareas,
+        ]);
+    }
+
 
     #[Route(path: '/buscar/tarea', name: 'buscar_tareas')]
     public function busqueda(Request $request, TareasRepository $tareaRepository, TareasUsuarioRepository $tareaRepoUsu, UsuariosRepository $usuariosRepository): Response
