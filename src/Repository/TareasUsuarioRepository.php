@@ -17,6 +17,16 @@ class TareasUsuarioRepository extends ServiceEntityRepository
         parent::__construct($registry, TareasUsuario::class);
     }
 
+    public function findTareasByUsuario(int $usuarioId)
+{
+    return $this->createQueryBuilder('t')
+        ->innerJoin('t.tareasUsuarios', 'tu')  // Asumiendo que 'tareasUsuarios' es la relación correcta
+        ->where('tu.idUsuario = :usuarioId')  // Asegúrate de que 'idUsuario' sea la clave de la relación
+        ->setParameter('usuarioId', $usuarioId)
+        ->getQuery()
+        ->getResult();
+}
+
     //    /**
     //     * @return TareasUsuario[] Returns an array of TareasUsuario objects
     //     */

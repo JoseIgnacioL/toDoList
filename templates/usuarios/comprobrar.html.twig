@@ -173,7 +173,7 @@
 						<th>Apellido</th>
 						<th>Email</th>
 						<th>Rol</th>
-                        <th>Accion</th>
+						<th>Accion</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -183,7 +183,7 @@
 							<td>{{ user.apellido }}</td>
 							<td>{{ user.coreo }}</td>
 							<td>{{ user.rol }}</td>
-                            <td><a class="logout" href=" {{ path('borrar_usuarios', {'id': user.id}) }}">Borrar</a></td>
+							<td><a href="{{ path('eliminar_usuario_tareas', {'usuarioId': usuario.id}) }}">Eliminar Usuario y Tareas</a></td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -198,7 +198,7 @@
 						<th>Nombre</th>
 						<th>descripcion</th>
 						<th>Fecha</th>
-                        <th>Accion</th>
+						<th>Accion</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -207,7 +207,9 @@
 							<td>{{ task.nombre }}</td>
 							<td>{{ task.descripcion }}</td>
 							<td>{{task.fecha.format('Y-m-d') }}</td>
-                            <td><a class="logout" href="{{ path('borrar_tareas', {'id': task.id}) }}">Borrar</a>
+							<td>
+								<a class="logout" href="{{ path('borrar_tareasT', {'id': task.id}) }}">Borrar</a>
+							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -216,5 +218,4 @@
 	</div>
 </div>
 
-<a class="logout" href="{{ path('cerrar_sesion') }}">Cerrar Sesión</a>
-{% endblock %}
+<a class="logout" href="{{ path('cerrar_sesion') }}">Cerrar Sesión</a>{% endblock %}

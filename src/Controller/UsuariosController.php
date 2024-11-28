@@ -21,27 +21,30 @@ use App\Repository\TareasUsuarioRepository;
 
 class UsuariosController extends AbstractController
 {
-    public static $entityManager;
+    private $entityManager;  // Variable de instancia
 
+    // Constructor para inyectar EntityManagerInterface
     public function __construct(EntityManagerInterface $entityManager)
     {
-        self::$entityManager = $entityManager;
+        $this->entityManager = $entityManager;  // Asignamos el EntityManager al atributo de la instancia
     }
 
-    
-    public static  function listarUsuarios()
+    // Método para listar todos los usuarios
+    public function listarUsuarios()
     {
-        $usuarios = self::$entityManager->getRepository(Usuarios::class)->findAll();
-
-        return $usuarios;
+        // Usamos $this->entityManager para acceder al repositorio de Usuarios
+        $usuarios = $this->entityManager->getRepository(Usuarios::class)->findAll();
+        return $usuarios;  // Devuelve la lista de usuarios
     }
 
-    public static function listarTareas() {
-        $tareas = self::$entityManager->getRepository(Tareas::class)->findAll();
-        
-        return $tareas;
-
+    // Método para listar todas las tareas
+    public function listarTareas()
+    {
+        // Usamos $this->entityManager para acceder al repositorio de Tareas
+        $tareas = $this->entityManager->getRepository(Tareas::class)->findAll();
+        return $tareas;  // Devuelve la lista de tareas
     }
+
 
     #[Route('/iniciar-sesion', name: 'iniciar_sesion', methods: ['GET', 'POST'])]
     function index(Request $request, UsuariosRepository $usuariosRepository, UserPasswordHasherInterface $passwordHasher, TareasUsuarioRepository $tareaRepoUsu)
@@ -59,16 +62,17 @@ class UsuariosController extends AbstractController
             $usuarioEncontrado = $usuariosRepository->findOneBy(['coreo' => $loginUsuario]);
 
             $session = new Session();
-            $session->set('id', $usuarioEncontrado->getId());
+
 
             $tareasUsuario = $tareaRepoUsu->findBy(['idUsuario' => $session->get('id')]);
-
-            $rol = $usuarioEncontrado->getRol();
 
             $users = $this->listarUsuarios();
             $tareas = $this->listarTareas();
 
             if ($usuarioEncontrado && $passwordHasher->isPasswordValid($usuarioEncontrado, $loginPassword)) {
+                $session->set('id', $usuarioEncontrado->getId());
+                $rol = $usuarioEncontrado->getRol();
+
                 if ($rol == "admin") {
                     return $this->render('usuarios/comprobrar.html.twig', [
                         'usuario' => $users,
