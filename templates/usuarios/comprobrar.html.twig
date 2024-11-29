@@ -173,7 +173,6 @@
 						<th>Apellido</th>
 						<th>Email</th>
 						<th>Rol</th>
-						<th>Accion</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -183,7 +182,6 @@
 							<td>{{ user.apellido }}</td>
 							<td>{{ user.coreo }}</td>
 							<td>{{ user.rol }}</td>
-							<td><a href="{{ path('eliminar_usuario_tareas', {'usuarioId': usuario.id}) }}">Eliminar Usuario y Tareas</a></td>
 						</tr>
 					{% endfor %}
 				</tbody>

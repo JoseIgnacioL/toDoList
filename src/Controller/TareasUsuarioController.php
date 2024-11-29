@@ -21,7 +21,6 @@ class TareasUsuarioController extends AbstractController
 
     private $usuariosController;
 
-    // Inyectar el controlador de Usuarios
     public function __construct(UsuariosController $usuariosController)
     {
         $this->usuariosController = $usuariosController;
